@@ -1,0 +1,24 @@
+{% extends "main_layout.html" %}
+{% block title %}Filton Hotel{% endblock %}
+{% set active_page = "izbrisano" %}
+{% block content %}
+
+<div class="container">
+  <h1 class="text-center mt-3">Izbrisana spročila</h1>
+  <div class="row">
+
+    {% for m in deleted_messages %}
+      <div class="col-12 mt-3">
+        <div class="card">
+          <h5 class="card-header">Od:<span class="card-subtitle text-muted"> {{m.name}}</span></h5>
+          <h5 class="card-header">Email:<span class="card-subtitle text-muted"> {{m.email}}</span></h5>
+          <div class="card-body">
+            <h6 class="card-subtitle mb-2 text-muted">Sporočilo:</h6>
+            <p class="card-text">{{m.text}}</p><p class="card-text"><small class="text-muted">{{m.created.strftime('%d-%m-%Y %H:%M')}}</small></p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

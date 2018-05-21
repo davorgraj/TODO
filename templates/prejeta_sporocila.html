@@ -1,0 +1,66 @@
+{% extends "main_layout.html" %}
+{% block title %}Filton Hotel{% endblock %}
+{% set active_page = "prejeto" %}
+{% block content %}
+<div class="container">
+  <h1 class="text-center mt-3">Prejeta spročila</h1>
+  <div class="row">
+
+    {% for m in all_user_messages %}
+      <div class="col-12 mt-3">
+        <div class="card">
+          <h5 class="card-header">Od:<span class="card-subtitle text-muted"> {{m.name}}</span></h5>
+          <h5 class="card-header">Email:<span class="card-subtitle text-muted"> {{m.email}}</span></h5>
+          <div class="card-body">
+            <h6 class="card-subtitle mb-2 text-muted">Sporočilo:</h6>
+            <p class="card-text">{{m.text}}</p><p class="card-text"><small class="text-muted">{{m.created.strftime('%d-%m-%Y %H:%M')}}</small></p>
+            <a href="" data-toggle="modal" data-target="#{{m.key.id()}}" class="badge badge-primary">Uredi</a>
+            <a href="" data-toggle="modal" data-target="#delete/{{m.key.id()}}" class="badge badge-danger">Izbriši</a>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade" id="{{m.key.id()}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Uredi sporočilo</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form method="post" action="/prejeta_sporocila/{{m.key.id()}}">
+                <div class="form-group ">
+                  <textarea class="form-control" name="message" required>{{m.text}}</textarea>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Zapri</button>
+                  <button type="submit" class="btn btn-primary">Sharni</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade" id="delete/{{m.key.id()}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Ali res želite izbrisati sporočilo?</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form method="post" action="/izbris_sporocila/{{m.key.id()}}">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Prekliči</button>
+                <button type="submit" class="btn btn-primary">Izbriši</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
