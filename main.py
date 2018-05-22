@@ -2,7 +2,7 @@
 import os
 import jinja2
 import webapp2
-from user import User
+from todo import Task
 
 template_dir = os.path.join(os.path.dirname(__file__), "templates")
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir), autoescape=False)
@@ -29,59 +29,60 @@ class BaseHandler(webapp2.RequestHandler):
 
 class MainHandler(BaseHandler):
     def get(self):
-        return self.render_template("hello.html")
+        return self.render_template("index.html")
 
     def post(self):
-        name = self.request.get("name")
-        email = self.request.get("email")
-        message = self.request.get("message")
+        task_name = self.request.get("task_name")
+        task_text = self.request.get("task_text")
+        done_check = self.request.get("done")
 
-        if not name:
-            name = "Neznanec"
+        if done_check:
+            todo = Task(task_name=task_name, task_text=task_text, status=True)
+            todo.put()
+        else:
+            todo = Task(task_name=task_name, task_text=task_text, status=False)
+            todo.put()
 
-        cb_object = User(name=name, email=email, text=message.replace("<script>", ""))
-        cb_object.put()
-
-        return self.render_template("hello.html")
+        return self.render_template("index.html")
 
 
-class AllUserMessagesHandler(BaseHandler):
+class AllTaskHandler(BaseHandler):
     def get(self):
-        all_user_messages = User.query(User.deleted == False).fetch()
-        params = {"all_user_messages": all_user_messages}
-        return self.render_template("prejeta_sporocila.html", params=params)
+        all_tasks = Task.query(Task.deleted == False).fetch()
+        params = {"all_tasks": all_tasks}
+        return self.render_template("opravila.html", params=params)
 
-    def post(self, sporocilo_id):
-        new_message = User.get_by_id(int(sporocilo_id))
-        message = self.request.get("message")
-        new_message.text = message
-        new_message.put()
+    def post(self, opravilo_id):
+        task = Task.get_by_id(int(opravilo_id))
+        text = self.request.get("new_text")
+        task.task_text = text
+        task.put()
 
-        params = {"message": new_message}
+        params = {"new_text": task}
 
-        return self.render_template("prejeta_sporocila.html", params=params)
+        return self.render_template("opravila.html", params=params)
 
 
-class MessageDeleteHandler(BaseHandler):
-    def post(self, sporocilo_id):
-        message_model = User.get_by_id(int(sporocilo_id))
+class DeleteTaskHandler(BaseHandler):
+    def post(self, opravilo_id):
+        message_model = Task.get_by_id(int(opravilo_id))
         message_model.key.delete()
         message_model.deleted = True
         message_model.put()
-        return self.render_template("prejeta_sporocila.html")
+        return self.render_template("opravila.html")
 
 
-class AllDeletedHandler(BaseHandler):
+class DeletedTasksHandler(BaseHandler):
     def get(self):
-        deleted_messages = User.query(User.deleted == True).fetch()
-        params = {"deleted_messages": deleted_messages}
-        return self.render_template("izbrisana_sporocila.html", params=params)
+        deleted_tasks = Task.query(Task.deleted == True).fetch()
+        params = {"deleted_tasks": deleted_tasks}
+        return self.render_template("izbrisana_opravila.html", params=params)
 
 
 app = webapp2.WSGIApplication([
     webapp2.Route('/', MainHandler),
-    webapp2.Route('/prejeta_sporocila', AllUserMessagesHandler),
-    webapp2.Route('/prejeta_sporocila/<sporocilo_id:\d+>', AllUserMessagesHandler),
-    webapp2.Route('/izbris_sporocila/<sporocilo_id:\d+>', MessageDeleteHandler),
-    webapp2.Route('/izbrisana_sporocila', AllDeletedHandler),
+    webapp2.Route('/opravila', AllTaskHandler),
+    webapp2.Route('/opravila/<opravilo_id:\d+>', AllTaskHandler),
+    webapp2.Route('/izbris/<opravilo_id:\d+>', DeleteTaskHandler),
+    webapp2.Route('/izbrisana_opravila', DeletedTasksHandler),
 ], debug=True)

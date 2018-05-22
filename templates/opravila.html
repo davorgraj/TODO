@@ -3,35 +3,40 @@
 {% set active_page = "prejeto" %}
 {% block content %}
 <div class="container">
-  <h1 class="text-center mt-3">Prejeta spročila</h1>
+  <h1 class="text-center mt-3">Opravila</h1>
   <div class="row">
 
-    {% for m in all_user_messages %}
+    {% for t in all_tasks %}
       <div class="col-12 mt-3">
         <div class="card">
-          <h5 class="card-header">Od:<span class="card-subtitle text-muted"> {{m.name}}</span></h5>
-          <h5 class="card-header">Email:<span class="card-subtitle text-muted"> {{m.email}}</span></h5>
+          <h5 class="card-header">Opravilo:<span class="card-subtitle text-muted"> {{t.task_name}}</span>
+            {% if t.status == True %}
+              <span class="float-right text-success">Opravljeno</span>
+            {% else %}
+              <span class="float-right text-danger">Ni opravljeno</span>
+            {% endif %}
+          </h5>
           <div class="card-body">
-            <h6 class="card-subtitle mb-2 text-muted">Sporočilo:</h6>
-            <p class="card-text">{{m.text}}</p><p class="card-text"><small class="text-muted">{{m.created.strftime('%d-%m-%Y %H:%M')}}</small></p>
-            <a href="" data-toggle="modal" data-target="#{{m.key.id()}}" class="badge badge-primary">Uredi</a>
-            <a href="" data-toggle="modal" data-target="#delete/{{m.key.id()}}" class="badge badge-danger">Izbriši</a>
+            <h6 class="card-subtitle mb-2 text-muted">Opis opravila:</h6>
+            <p class="card-text">{{t.task_text}}</p><p class="card-text"><small class="text-muted">{{t.created.strftime('%d-%m-%Y %H:%M')}}</small></p>
+            <a href="" data-toggle="modal" data-target="#{{t.key.id()}}" class="badge badge-primary">Uredi</a>
+            <a href="" data-toggle="modal" data-target="#delete/{{t.key.id()}}" class="badge badge-danger">Izbriši</a>
           </div>
         </div>
       </div>
-      <div class="modal fade" id="{{m.key.id()}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal fade" id="{{t.key.id()}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLongTitle">Uredi sporočilo</h5>
+              <h5 class="modal-title" id="exampleModalLongTitle">Uredi opravilo</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
-              <form method="post" action="/prejeta_sporocila/{{m.key.id()}}">
+              <form method="post" action="/opravila/{{t.key.id()}}">
                 <div class="form-group ">
-                  <textarea class="form-control" name="message" required>{{m.text}}</textarea>
+                  <textarea class="form-control" name="new_text" required>{{t.task_text}}</textarea>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Zapri</button>
@@ -42,17 +47,17 @@
           </div>
         </div>
       </div>
-      <div class="modal fade" id="delete/{{m.key.id()}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal fade" id="delete/{{t.key.id()}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLongTitle">Ali res želite izbrisati sporočilo?</h5>
+              <h5 class="modal-title" id="exampleModalLongTitle">Ali res želite izbrisati opravilo?</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
-              <form method="post" action="/izbris_sporocila/{{m.key.id()}}">
+              <form method="post" action="/izbris/{{t.key.id()}}">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Prekliči</button>
                 <button type="submit" class="btn btn-primary">Izbriši</button>
               </form>

@@ -1,0 +1,28 @@
+{% extends "main_layout.html" %}
+{% block title %}TODO App{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-4">
+
+      <h1 class="mt-5 mb-5"></h1>
+
+      <form method="post">
+        <div class="form-group">
+          <label>Ime opravila</label>
+          <input type="text" class="form-control" name="task_name" placeholder="Ime opravila">
+        </div>
+        <div class="form-group ">
+          <label>Opis opravila:</label>
+          <textarea class="form-control" name="task_text" placeholder="Opis opravila" required></textarea>
+        </div>
+        <div class="form-group ">
+          <label>Opravljeno?</label>
+          <input type="checkbox" name="done" value="false">
+        </div>
+        <button type="submit" class="btn btn-dark">Dodaj</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

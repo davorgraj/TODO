@@ -1,0 +1,29 @@
+{% extends "main_layout.html" %}
+{% block title %}Filton Hotel{% endblock %}
+{% set active_page = "izbrisano" %}
+{% block content %}
+
+<div class="container">
+  <h1 class="text-center mt-3">Izbrisana spročila</h1>
+  <div class="row">
+
+    {% for t in deleted_tasks %}
+      <div class="col-12 mt-3">
+        <div class="card">
+          <h5 class="card-header">Opravilo:<span class="card-subtitle text-muted"> {{t.task_name}}</span>
+          {% if t.status == True %}
+            <span class="float-right text-success">Opravljeno</span>
+          {% else %}
+            <span class="float-right text-danger">Ni opravljeno</span>
+          {% endif %}
+          </h5>
+          <div class="card-body">
+            <h6 class="card-subtitle mb-2 text-muted">Opis opravila:</h6>
+            <p class="card-text">{{t.task_text}}</p><p class="card-text"><small class="text-muted">{{t.created.strftime('%d-%m-%Y %H:%M')}}</small></p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
